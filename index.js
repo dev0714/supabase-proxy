@@ -5,7 +5,13 @@ app.use(express.json());
 
 const API_KEY = process.env.API_KEY || "my_secret_key";
 
-app.post("/proxy", async (req, res) => {
+// Health check route
+app.get("/", (req, res) => {
+  res.send("Proxy service is running");
+});
+
+// Proxy endpoint at root POST /
+app.post("/", async (req, res) => {
   if (req.headers["x-api-key"] !== API_KEY) {
     return res.status(401).json({ error: "Unauthorized" });
   }
@@ -25,6 +31,7 @@ app.post("/proxy", async (req, res) => {
   }
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log("Proxy server running");
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Proxy server running on port ${port}`);
 });
